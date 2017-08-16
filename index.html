@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+
+    <title>ArcGis for JavaScript Demo</title>
+
+    <!--<link rel="apple-touch-icon" href="apple-touch-icon.png">-->
+    <!-- Place favicon.ico in the root directory -->
+
+    <link rel="stylesheet" href="css/main.css">
+    <!--<link rel="stylesheet" href="css/arcgis-main-layout-4.4.css">-->
+    <!--<script src="js/arcgis-4.4.js"></script>-->
+    <!--<script src="js/vendor/jquery-1.12.0.min.js"></script>-->
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.4/esri/css/main.css">
+    <script src="https://js.arcgis.com/4.4/"></script>
+
+    <script>
+            require(
+                [
+                    "esri/Map",
+                    "esri/views/MapView",
+                    "esri/Graphic",
+
+                    "esri/geometry/Polyline",
+                    "esri/symbols/SimpleLineSymbol",
+                    "dojo/domReady!"
+                ],
+                function (Map,
+                          MapView,
+                          Graphic,
+                          Polyline,
+                          SimpleLineSymbol) {
+                    var map = new Map({
+                        basemap: "topo"
+                    });
+
+                    var view = new MapView({
+                        center: [-80, 35],
+                        container: "map_view",
+                        map: map,
+                        zoom: 3
+                    });
+
+
+                    // Create a symbol for drawing the line
+                    var lineSymbol = new SimpleLineSymbol({
+                        color: [226, 119, 40],
+                        width: 3,
+                        join:"round", // 转折方式 miter | round | bevel
+                        style:"solid", // 线段样式 dash dash-dot dot long-dash long-dash-dot long-dash-dot-dot none short-dash short-dash-dot short-dash-dot-dot short-dot solid
+                        cap:"round" // 笔头形状  butt | round | square
+                    });
+                    // Create a line geometry with the coordinates of the line
+                    var polyline = new Polyline({
+                        paths: [
+                            [37.674163,55.840428],
+                            [40.674163,56.840428],
+                            [41.674163,57.840428],
+                            [42.674163,58.840428],
+                            [116.398496,39.912384],
+                            [139.677976,35.804478],
+                            [-73.979031,40.771115]
+                        ]
+                    });
+                    // Create an object for storing attributes related to the line
+                    var lineAtt = {
+                        Name: "Keystone Pipeline",
+                        Owner: "TransCanada",
+                        Length: "3,456 km"
+                    };
+
+                    var polylineGraphic = new Graphic({
+                        geometry: polyline,
+                        symbol: lineSymbol,
+                        attributes: lineAtt,
+                        popupTemplate: { // autocasts as new PopupTemplate()
+                            title: "{Name}",
+                            content: [{
+                                type: "fields",
+                                fieldInfos: [{
+                                    fieldName: "Name"
+                                }, {
+                                    fieldName: "Owner"
+                                }, {
+                                    fieldName: "Length"
+                                }]
+                            }]
+                        }
+                    });
+                    view.graphics.addMany([polylineGraphic]);
+
+//                        var layer = new GraphicsLayer({
+//                            graphics: [graphic]
+//                        });
+
+                    //  map.layers.add(layer);
+                }
+            );
+    </script>
+</head>
+<body>
+
+<div id="map_view">
+
+</div>
+
+</body>
+</html>
